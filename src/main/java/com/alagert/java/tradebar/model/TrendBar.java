@@ -38,6 +38,10 @@ public class TrendBar {
         return lowPrice;
     }
 
+    public PeriodType getPeriodType() {
+        return periodType;
+    }
+
     public long getTimeStamp() {
         return timeStamp;
     }
