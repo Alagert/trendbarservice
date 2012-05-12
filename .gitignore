@@ -1,3 +1,9 @@
+# Project files #
+tradebar.iws
+tradebar.ipr
+tradebar.iml
+
+# Java #
 *.class
 
 # Package Files #
