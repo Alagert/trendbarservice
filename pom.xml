@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alagert.java</groupId>
-    <artifactId>tradebar</artifactId>
+    <artifactId>trendbar</artifactId>
     <version>1.0</version>
-    <name>TradeBar</name>
+    <name>TrendBar</name>
 
     <dependencies>
         <dependency>
