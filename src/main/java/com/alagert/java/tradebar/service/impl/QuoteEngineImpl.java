@@ -1,43 +1,52 @@
 package com.alagert.java.tradebar.service.impl;
 
 import com.alagert.java.tradebar.model.Quote;
+import com.alagert.java.tradebar.model.Symbol;
 
-import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Andrey Tsvetkov
  */
 public class QuoteEngineImpl implements Runnable {
-    private final BlockingQueue<Quote> quotes;
-    private final AtomicInteger counter;
+    private final AtomicInteger counter = new AtomicInteger(0);
 
-    private final TreeSet<Double> minuteSet = new TreeSet<Double>();
+    private final ConcurrentHashMap<Symbol, BlockingQueue<Quote>> providers = new ConcurrentHashMap<Symbol, BlockingQueue<Quote>>();
 
+    AtomicReference<Double> currentMin = new AtomicReference<Double>(0.0);
+    AtomicReference<Double> currentMax = new AtomicReference<Double>(0.0);
+    AtomicReference<Double> close = new AtomicReference<Double>(0.0);
 
-    public QuoteEngineImpl(BlockingQueue<Quote> quotes) {
-        this.quotes = quotes;
-        counter = new AtomicInteger(0);
-        ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
-        service.scheduleWithFixedDelay(new TrendBarMaintainer(), 5, 5, TimeUnit.SECONDS);
+    public BlockingQueue<Quote> registerProvider(Symbol symbol) throws ProviderAlreadyRegisteredException {
+        if (providers.containsKey(symbol)) {
+            throw new ProviderAlreadyRegisteredException();
+        }
+
+        return providers.put(symbol, new LinkedBlockingQueue<Quote>());
     }
 
     public void consumeQuotes() throws InterruptedException {
+        BlockingQueue<Quote> euroQuote = providers.get(Symbol.EURUSD);
         Quote quoteFromQueue = null;
 
-        while ((quoteFromQueue = quotes.poll(200, TimeUnit.MILLISECONDS)) != null) {
-
-            synchronized (minuteSet) {
-                minuteSet.add(quoteFromQueue.getPrice());
+        while ((quoteFromQueue = euroQuote.poll(200, TimeUnit.MILLISECONDS)) != null) {
+            double price = quoteFromQueue.getPrice();
+            close.getAndSet(price);
+            double min = currentMin.get();
+            if (price < min) {
+                currentMin.compareAndSet(min, price);
             }
-
-            System.out.println("Counter=" + counter.getAndIncrement() + " " + quoteFromQueue.toString());
+            double max = currentMax.get();
+            if (price > max) {
+                currentMax.compareAndSet(max, price);
+            }
+            counter.getAndIncrement();
         }
-
     }
 
     @Override
@@ -47,19 +56,6 @@ public class QuoteEngineImpl implements Runnable {
         } catch (InterruptedException e) {
             System.out.println("Consumer interrupted");
             Thread.currentThread().interrupt();
-        }
-    }
-
-    private class TrendBarMaintainer implements Runnable {
-
-
-
-        @Override
-        public void run() {
-            synchronized (minuteSet) {
-                System.out.println("minPrice = " + minuteSet.first() + " highPrice" + minuteSet.last());
-                minuteSet.clear();
-            }
         }
     }
 }
