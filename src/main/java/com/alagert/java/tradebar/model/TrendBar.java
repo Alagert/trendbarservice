@@ -1,48 +1,74 @@
 package com.alagert.java.tradebar.model;
 
-import java.math.BigDecimal;
 
 /**
  * @author Andrey Tsvetkov
  */
 public class TrendBar {
-    private final BigDecimal openPrice;
-    private final BigDecimal closePrice;
-    private final BigDecimal highPrice;
-    private final BigDecimal lowPrice;
-    private final PeriodType periodType;
-    private final long timeStamp;
+    private double openPrice;
+    private double closePrice;
+    private double highPrice;
+    private double lowPrice;
+    private PeriodType periodType;
+    private long timeStamp;
 
-    public TrendBar(BigDecimal openPrice, BigDecimal closePrice, BigDecimal highPrice, BigDecimal lowPrice, PeriodType periodType, long timeStamp) {
-        this.openPrice = openPrice;
-        this.closePrice = closePrice;
-        this.highPrice = highPrice;
-        this.lowPrice = lowPrice;
+    public TrendBar(PeriodType periodType) {
         this.periodType = periodType;
-        this.timeStamp = timeStamp;
     }
 
-    public BigDecimal getOpenPrice() {
+    public double getOpenPrice() {
         return openPrice;
     }
 
-    public BigDecimal getClosePrice() {
+    public void setOpenPrice(double openPrice) {
+        this.openPrice = openPrice;
+    }
+
+    public double getClosePrice() {
         return closePrice;
     }
 
-    public BigDecimal getHighPrice() {
+    public void setClosePrice(double closePrice) {
+        this.closePrice = closePrice;
+    }
+
+    public double getHighPrice() {
         return highPrice;
     }
 
-    public BigDecimal getLowPrice() {
+    public void setHighPrice(double highPrice) {
+        this.highPrice = highPrice;
+    }
+
+    public double getLowPrice() {
         return lowPrice;
+    }
+
+    public void setLowPrice(double lowPrice) {
+        this.lowPrice = lowPrice;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public PeriodType getPeriodType() {
         return periodType;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
+    @Override
+    public String toString() {
+        return "TrendBar{" +
+                "openPrice=" + openPrice +
+                ", closePrice=" + closePrice +
+                ", highPrice=" + highPrice +
+                ", lowPrice=" + lowPrice +
+                ", periodType=" + periodType +
+                ", timeStamp=" + timeStamp +
+                '}';
     }
 }

@@ -41,7 +41,7 @@ public class QuoteProviderImpl implements QuoteProvider, Runnable {
         while (!flag) {
             try {
                 generateQuotes();
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 System.out.println("QuoteProducer was interrupted");
                 Thread.currentThread().interrupt();
