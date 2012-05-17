@@ -1,13 +1,13 @@
 package com.alagert.java.tradebar.service.impl;
 
-import com.alagert.java.tradebar.model.PeriodType;
-import com.alagert.java.tradebar.model.Quote;
-import com.alagert.java.tradebar.model.TrendBar;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import com.alagert.java.tradebar.model.PeriodType;
+import com.alagert.java.tradebar.model.Quote;
+import com.alagert.java.tradebar.model.TrendBar;
 
 /**
  * @author Andrey Tsvetkov
@@ -21,13 +21,16 @@ public class TrendComposer implements Runnable {
     private final TrendBar dayBar = new TrendBar(PeriodType.D1);
 
     private final BlockingQueue<Quote> quotes;
-    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(3);
 
     public TrendComposer(BlockingQueue<Quote> quotes) {
         this.quotes = quotes;
-        executorService.scheduleWithFixedDelay(new TrendSaver(minuteBar), 1, 1, TimeUnit.SECONDS);
-        executorService.scheduleWithFixedDelay(new TrendSaver(hourBar), 30, 30, TimeUnit.SECONDS);
-        executorService.scheduleWithFixedDelay(new TrendSaver(dayBar), 60, 60, TimeUnit.SECONDS);
+        final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(3);
+        executorService.scheduleWithFixedDelay(new TrendSaver(minuteBar), minuteBar.getPeriodType().getDelay(),
+                minuteBar.getPeriodType().getDelay(), minuteBar.getPeriodType().getTimeUnit());
+        executorService.scheduleWithFixedDelay(new TrendSaver(hourBar), hourBar.getPeriodType().getDelay(),
+                hourBar.getPeriodType().getDelay(), hourBar.getPeriodType().getTimeUnit());
+        executorService.scheduleWithFixedDelay(new TrendSaver(dayBar), dayBar.getPeriodType().getDelay(),
+                dayBar.getPeriodType().getDelay(), dayBar.getPeriodType().getTimeUnit());
     }
 
     @Override
