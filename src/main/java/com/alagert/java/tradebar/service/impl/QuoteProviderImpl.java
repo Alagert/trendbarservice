@@ -16,17 +16,9 @@ public class QuoteProviderImpl implements QuoteProvider, Runnable {
 
     private final Random rnd;
 
-    public volatile boolean flag;
-
     public QuoteProviderImpl(BlockingQueue<Quote> quotes) {
         this.quotes = quotes;
-        this.rnd = new Random(12l);
-        flag = false;
-    }
-
-    @Override
-    public Quote getQuote() {
-        return null;
+        this.rnd = new Random(System.currentTimeMillis());
     }
 
     @Override
@@ -37,16 +29,14 @@ public class QuoteProviderImpl implements QuoteProvider, Runnable {
 
     @Override
     public void run() {
-        int i = 0;
-        while (!flag) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 generateQuotes();
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                System.out.println("QuoteProducer was interrupted");
+                System.out.println("QuoteProvider was interrupted");
                 Thread.currentThread().interrupt();
             }
-            i++;
         }
     }
 }

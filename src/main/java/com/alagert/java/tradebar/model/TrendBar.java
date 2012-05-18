@@ -10,10 +10,12 @@ public class TrendBar {
     private double highPrice;
     private double lowPrice;
     private PeriodType periodType;
+    private Symbol symbol;
     private long timeStamp;
 
-    public TrendBar(PeriodType periodType) {
+    public TrendBar(PeriodType periodType, Symbol symbol) {
         this.periodType = periodType;
+        this.symbol = symbol;
     }
 
     public double getOpenPrice() {
@@ -52,6 +54,10 @@ public class TrendBar {
         return timeStamp;
     }
 
+    public Symbol getSymbol() {
+        return symbol;
+    }
+
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
@@ -68,6 +74,7 @@ public class TrendBar {
                 ", highPrice=" + highPrice +
                 ", lowPrice=" + lowPrice +
                 ", periodType=" + periodType +
+                ", symbol=" + symbol +
                 ", timeStamp=" + timeStamp +
                 '}';
     }

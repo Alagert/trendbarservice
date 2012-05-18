@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <!--<bean id="poolDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">-->
+        <!--<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>-->
+        <!--<property name="url" value="jdbc:hsqldb:file:~/db;shutdown=true"/>-->
+        <!--<property name="username" value="SA"/>-->
+        <!--<property name="password" value=""/>-->
+        <!--<property name="initialSize" value="1"/>-->
+        <!--<property name="maxActive" value="5"/>-->
+        <!--<property name="poolPreparedStatements" value="true"/>-->
+        <!--<property name="maxOpenPreparedStatements" value="10"/>-->
+    <!--</bean>-->
+
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="embeddedHsql"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+    <bean id="trendBarDao" class="com.alagert.java.tradebar.dao.impl.TrendBarDaoImpl">
+        <property name="dataSource" ref="embeddedHsql"/>
+    </bean>
+
+    <jdbc:embedded-database id="embeddedHsql" type="HSQL">
+        <jdbc:script location="classpath:create_objects.sql"/>
+    </jdbc:embedded-database>
+
+</beans>

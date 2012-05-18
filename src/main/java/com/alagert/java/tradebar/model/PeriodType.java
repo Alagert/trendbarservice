@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
  * @author Andrey Tsvetkov
  */
 public enum PeriodType {
-    M1(60, TimeUnit.SECONDS),
-    H1(60, TimeUnit.MINUTES),
+    M1(5, TimeUnit.SECONDS),
+    H1(1, TimeUnit.MINUTES),
     D1(24, TimeUnit.HOURS);
 
     private long delay;
