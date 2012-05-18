@@ -1,7 +1,7 @@
-package com.alagert.java.tradebar.dao;
+package com.alagert.java.trendbar.dao;
 
-import com.alagert.java.tradebar.model.Symbol;
-import com.alagert.java.tradebar.model.TrendBar;
+import com.alagert.java.trendbar.model.Symbol;
+import com.alagert.java.trendbar.model.TrendBar;
 
 import java.util.Collection;
 

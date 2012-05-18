@@ -1,8 +1,8 @@
-package com.alagert.java.tradebar.service.impl;
+package com.alagert.java.trendbar.service.impl;
 
-import com.alagert.java.tradebar.model.Quote;
-import com.alagert.java.tradebar.model.Symbol;
-import com.alagert.java.tradebar.service.QuoteProvider;
+import com.alagert.java.trendbar.model.Quote;
+import com.alagert.java.trendbar.model.Symbol;
+import com.alagert.java.trendbar.service.QuoteProvider;
 
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;

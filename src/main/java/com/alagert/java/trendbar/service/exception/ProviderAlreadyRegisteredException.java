@@ -1,4 +1,4 @@
-package com.alagert.java.tradebar.service.exception;
+package com.alagert.java.trendbar.service.exception;
 
 /**
  * @author Andrey Tsvetkov

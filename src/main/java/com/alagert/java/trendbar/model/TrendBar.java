@@ -1,4 +1,4 @@
-package com.alagert.java.tradebar.model;
+package com.alagert.java.trendbar.model;
 
 
 /**
@@ -65,6 +65,17 @@ public class TrendBar {
     public PeriodType getPeriodType() {
         return periodType;
     }
+
+    public TrendBar copy() {
+        TrendBar newBar = new TrendBar(periodType, symbol);
+        newBar.setClosePrice(closePrice);
+        newBar.setHighPrice(highPrice);
+        newBar.setLowPrice(lowPrice);
+        newBar.setOpenPrice(openPrice);
+        newBar.setTimeStamp(timeStamp);
+        return newBar;
+    }
+
 
     @Override
     public String toString() {

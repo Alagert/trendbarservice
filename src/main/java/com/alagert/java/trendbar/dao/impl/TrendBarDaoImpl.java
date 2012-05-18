@@ -1,9 +1,9 @@
-package com.alagert.java.tradebar.dao.impl;
+package com.alagert.java.trendbar.dao.impl;
 
-import com.alagert.java.tradebar.dao.TrendBarDao;
-import com.alagert.java.tradebar.model.PeriodType;
-import com.alagert.java.tradebar.model.Symbol;
-import com.alagert.java.tradebar.model.TrendBar;
+import com.alagert.java.trendbar.dao.TrendBarDao;
+import com.alagert.java.trendbar.model.PeriodType;
+import com.alagert.java.trendbar.model.Symbol;
+import com.alagert.java.trendbar.model.TrendBar;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 

@@ -1,6 +1,4 @@
-package com.alagert.java.tradebar.model;
-
-import java.math.BigDecimal;
+package com.alagert.java.trendbar.model;
 
 /**
  * @author Andrey Tsvetkov

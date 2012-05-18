@@ -1,4 +1,4 @@
-package com.alagert.java.tradebar.model;
+package com.alagert.java.trendbar.model;
 
 
 /**

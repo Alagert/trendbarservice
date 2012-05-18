@@ -1,10 +1,9 @@
-package com.alagert.java.tradebar.service.impl;
+package com.alagert.java.trendbar.service.impl;
 
-import com.alagert.java.tradebar.dao.TrendBarDao;
-import com.alagert.java.tradebar.model.PeriodType;
-import com.alagert.java.tradebar.model.Quote;
-import com.alagert.java.tradebar.model.Symbol;
-import com.alagert.java.tradebar.model.TrendBar;
+import com.alagert.java.trendbar.model.PeriodType;
+import com.alagert.java.trendbar.model.Quote;
+import com.alagert.java.trendbar.model.Symbol;
+import com.alagert.java.trendbar.model.TrendBar;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,8 +15,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class TrendComposer implements Runnable {
 
-    private TrendBarDao trendBarDao;
-
     private final Object mutex = new Object();
 
     private final TrendBar minuteBar;
@@ -26,11 +23,12 @@ public class TrendComposer implements Runnable {
 
 
     private final BlockingQueue<Quote> quotes;
+    private final BlockingQueue<TrendBar> doneBars;
     private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(3);
 
-    public TrendComposer(BlockingQueue<Quote> quotes, TrendBarDao trendBarDao, Symbol symbol) {
+    public TrendComposer(BlockingQueue<Quote> quotes, BlockingQueue<TrendBar> doneBars, Symbol symbol) {
         this.quotes = quotes;
-        this.trendBarDao = trendBarDao;
+        this.doneBars = doneBars;
 
         minuteBar = new TrendBar(PeriodType.M1, symbol);
         hourBar = new TrendBar(PeriodType.H1, symbol);
@@ -88,8 +86,13 @@ public class TrendComposer implements Runnable {
         public void run() {
             synchronized (mutex) {
                 trendBar.setTimeStamp(System.currentTimeMillis());
-                System.out.println(trendBar.toString());
-                trendBarDao.addTrendBar(trendBar);
+                try {
+                    doneBars.put(trendBar.copy());
+                } catch (InterruptedException e) {
+                    executorService.shutdown();
+                    Thread.currentThread().interrupt();
+                }
+
                 trendBar.setClosePrice(0.0);
                 trendBar.setLowPrice(Double.MAX_VALUE);
                 trendBar.setHighPrice(Double.MIN_VALUE);

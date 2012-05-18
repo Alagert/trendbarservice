@@ -1,4 +1,4 @@
-package com.alagert.java.tradebar.service.impl;
+package com.alagert.java.trendbar.service.impl;
 
 /**
  * @author Andrey Tsvetkov

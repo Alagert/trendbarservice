@@ -1,9 +1,9 @@
-package com.alagert.java.tradebar;
+package com.alagert.java.trendbar;
 
-import com.alagert.java.tradebar.dao.TrendBarDao;
-import com.alagert.java.tradebar.model.Symbol;
-import com.alagert.java.tradebar.service.impl.QuoteEngineImpl;
-import com.alagert.java.tradebar.service.impl.QuoteProviderImpl;
+import com.alagert.java.trendbar.dao.TrendBarDao;
+import com.alagert.java.trendbar.model.Symbol;
+import com.alagert.java.trendbar.service.impl.QuoteEngineImpl;
+import com.alagert.java.trendbar.service.impl.QuoteProviderImpl;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -26,12 +26,15 @@ public final class Main {
         QuoteProviderImpl euroProvider = new QuoteProviderImpl(quoteEngine.registerProvider(Symbol.EURUSD));
         QuoteProviderImpl jpyProvider = new QuoteProviderImpl(quoteEngine.registerProvider(Symbol.EURJPY));
 
+        Thread engine = new Thread(quoteEngine);
+
         Thread providerThread = new Thread(euroProvider);
         Thread jpyThread = new Thread(jpyProvider);
 
         synchronized (Main.class) {
             providerThread.start();
             jpyThread.start();
+            engine.start();
         }
 
         Thread.sleep(80000);
@@ -39,5 +42,6 @@ public final class Main {
 
         Thread.sleep(30000);
         jpyThread.interrupt();
+        engine.interrupt();
     }
 }

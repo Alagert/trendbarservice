@@ -21,7 +21,7 @@
 
     <tx:annotation-driven transaction-manager="txManager"/>
 
-    <bean id="trendBarDao" class="com.alagert.java.tradebar.dao.impl.TrendBarDaoImpl">
+    <bean id="trendBarDao" class="com.alagert.java.trendbar.dao.impl.TrendBarDaoImpl">
         <property name="dataSource" ref="embeddedHsql"/>
     </bean>
 
