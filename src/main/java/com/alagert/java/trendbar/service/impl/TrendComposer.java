@@ -6,8 +6,8 @@ import com.alagert.java.trendbar.model.Symbol;
 import com.alagert.java.trendbar.model.TrendBar;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,10 +21,9 @@ public class TrendComposer implements Runnable {
     private final TrendBar hourBar;
     private final TrendBar dayBar;
 
-
     private final BlockingQueue<Quote> quotes;
     private final BlockingQueue<TrendBar> doneBars;
-    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(3);
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(3);
 
     public TrendComposer(BlockingQueue<Quote> quotes, BlockingQueue<TrendBar> doneBars, Symbol symbol) {
         this.quotes = quotes;
@@ -61,9 +60,9 @@ public class TrendComposer implements Runnable {
 
     private void updateTrend(TrendBar bar, Quote quote) {
         double quotePrice = quote.getPrice();
-        if (bar.getTimeStamp() < 0) {
+        if (bar.getTimestamp() < 0) {
             bar.setOpenPrice(quotePrice);
-            bar.setTimeStamp(1);
+            bar.setTimestamp(1);
         } else {
             bar.setClosePrice(quotePrice);
         }
@@ -75,7 +74,7 @@ public class TrendComposer implements Runnable {
         }
     }
 
-    private class TrendSaver implements Runnable {
+    private final class TrendSaver implements Runnable {
         private final TrendBar trendBar;
 
         private TrendSaver(TrendBar trendBar) {
@@ -85,7 +84,7 @@ public class TrendComposer implements Runnable {
         @Override
         public void run() {
             synchronized (mutex) {
-                trendBar.setTimeStamp(System.currentTimeMillis());
+                trendBar.setTimestamp(System.currentTimeMillis());
                 try {
                     doneBars.put(trendBar.copy());
                 } catch (InterruptedException e) {
@@ -96,7 +95,7 @@ public class TrendComposer implements Runnable {
                 trendBar.setClosePrice(0.0);
                 trendBar.setLowPrice(Double.MAX_VALUE);
                 trendBar.setHighPrice(Double.MIN_VALUE);
-                trendBar.setTimeStamp(-1);
+                trendBar.setTimestamp(-1);
             }
         }
     }

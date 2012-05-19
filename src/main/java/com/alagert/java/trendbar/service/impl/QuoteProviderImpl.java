@@ -34,7 +34,6 @@ public class QuoteProviderImpl implements QuoteProvider, Runnable {
                 generateQuotes();
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                System.out.println("QuoteProvider was interrupted");
                 Thread.currentThread().interrupt();
             }
         }

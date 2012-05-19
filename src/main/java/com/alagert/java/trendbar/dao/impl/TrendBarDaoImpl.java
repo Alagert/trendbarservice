@@ -16,7 +16,7 @@ import java.util.Collection;
  */
 public class TrendBarDaoImpl extends JdbcDaoSupport implements TrendBarDao {
 
-    private final static TrendBarRowMapper TREND_BAR_ROW_MAPPER = new TrendBarRowMapper();
+    private static final TrendBarRowMapper TREND_BAR_ROW_MAPPER = new TrendBarRowMapper();
 
     @Override
     public void addTrendBar(TrendBar trendBar) {
@@ -24,16 +24,23 @@ public class TrendBarDaoImpl extends JdbcDaoSupport implements TrendBarDao {
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         getJdbcTemplate().update(sql, trendBar.getOpenPrice(), trendBar.getLowPrice(), trendBar.getHighPrice(),
                 trendBar.getClosePrice(),
-                trendBar.getPeriodType().name(), trendBar.getSymbol().name(), trendBar.getTimeStamp());
+                trendBar.getPeriodType().name(), trendBar.getSymbol().name(), trendBar.getTimestamp());
     }
 
 
     @Override
-    public Collection<TrendBar> getTrendBars(Symbol symbol, long from, long to) {
+    public Collection<TrendBar> getTrendBars(Symbol symbol, PeriodType periodType, long from, long to) {
         String sql = "SELECT open_price, low_price, high_price, close_price, period_type, symbol, creation_time FROM TrendBar " +
-                "WHERE creation_time >= ? AND creation_time <= ? and symbol = ?";
+                "WHERE creation_time >= ? AND creation_time <= ? AND symbol = ? AND period_type = ?";
 
-        return getJdbcTemplate().query(sql, TREND_BAR_ROW_MAPPER, from, to, symbol.name());
+        return getJdbcTemplate().query(sql, TREND_BAR_ROW_MAPPER, from, to, symbol.name(), periodType.name());
+    }
+
+    @Override
+    public Collection<TrendBar> getAllBars(Symbol symbol, PeriodType periodType) {
+        String sql = "SELECT open_price, low_price, high_price, close_price, period_type, symbol, creation_time FROM TrendBar " +
+                "WHERE symbol = ? AND period_type = ?";
+        return getJdbcTemplate().query(sql, TREND_BAR_ROW_MAPPER, symbol.name(), periodType.name());
     }
 
     private static class TrendBarRowMapper implements RowMapper<TrendBar> {
@@ -44,9 +51,9 @@ public class TrendBarDaoImpl extends JdbcDaoSupport implements TrendBarDao {
 
             trendBar.setOpenPrice(rs.getDouble(1));
             trendBar.setLowPrice(rs.getDouble(2));
-            trendBar.setClosePrice(rs.getDouble(3));
-            trendBar.setHighPrice(rs.getDouble(4));
-
+            trendBar.setHighPrice(rs.getDouble(3));
+            trendBar.setClosePrice(rs.getDouble(4));
+            trendBar.setTimestamp(rs.getLong(7));
             return trendBar;
         }
     }

@@ -1,8 +1,7 @@
 package com.alagert.java.trendbar;
 
-import com.alagert.java.trendbar.dao.TrendBarDao;
 import com.alagert.java.trendbar.model.Symbol;
-import com.alagert.java.trendbar.service.impl.QuoteEngineImpl;
+import com.alagert.java.trendbar.service.QuoteEngine;
 import com.alagert.java.trendbar.service.impl.QuoteProviderImpl;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -17,16 +16,14 @@ public final class Main {
     public static void main(String[] args) throws Exception {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         applicationContext.registerShutdownHook();
-        TrendBarDao trendBarDao = (TrendBarDao) applicationContext.getBean("trendBarDao");
 
-        QuoteEngineImpl quoteEngine = new QuoteEngineImpl();
-        quoteEngine.setTrendBarDao(trendBarDao);
+        QuoteEngine quoteEngine = (QuoteEngine) applicationContext.getBean("quoteEngine");//new QuoteEngineImpl();
 
 
         QuoteProviderImpl euroProvider = new QuoteProviderImpl(quoteEngine.registerProvider(Symbol.EURUSD));
         QuoteProviderImpl jpyProvider = new QuoteProviderImpl(quoteEngine.registerProvider(Symbol.EURJPY));
 
-        Thread engine = new Thread(quoteEngine);
+        Thread engine = new Thread((Runnable) quoteEngine);
 
         Thread providerThread = new Thread(euroProvider);
         Thread jpyThread = new Thread(jpyProvider);
